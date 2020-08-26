@@ -1,0 +1,41 @@
+﻿@using TodoMvvmApp.Shared;
+
+<h3>TodoList</h3>
+
+<ul>
+    @foreach (var todo in Todos)
+    {
+        <li>
+            <span class="todo" style="@(todo.Done ? "text-decoration: line-through;" : "")">
+                @todo.Text
+            </span>
+            <button class="btn btn-link" @onclick="() => EditTodo(todo)">
+                <span class="oi oi-pencil mr-2" aria-hidden="true"></span>
+                Edit
+            </button>
+            <button class="btn btn-link text-danger" @onclick="() => RemoveTodo(todo)">
+                <span class="oi oi-trash mr-2" aria-hidden="true"></span>
+                Remove
+            </button>
+        </li>
+    }
+</ul>
+
+@code {
+    [Parameter]
+    public IEnumerable<Todo> Todos { get; set; }
+    [Parameter]
+    public EventCallback<Todo> OnTodoSelected { get; set; }
+    [Parameter]
+    public EventCallback<Todo> OnTodoRemove { get; set; }
+
+    private void EditTodo(Todo todo)
+    {
+        OnTodoSelected.InvokeAsync(todo);
+    }
+
+    private void RemoveTodo(Todo todo)
+    {
+        OnTodoRemove.InvokeAsync(todo);
+    }
+}

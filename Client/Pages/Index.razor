@@ -1,0 +1,36 @@
+﻿@page "/"
+
+@using TodoMvvmApp.Client.ViewModels;
+@using TodoMvvmApp.Client.Components;
+@using TodoMvvmApp.Shared;
+
+@inject TodosViewModel ViewModel
+
+@if (ViewModel.Loading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <TodosList Todos="todos" OnTodoSelected="ViewModel.SelectTodo" OnTodoRemove="ViewModel.DeleteAsync" />
+    <TodosForm Todo="ViewModel.SelectedTodo" OnSubmit="ViewModel.SaveAsync" OnCancel="ViewModel.ClearSelected" />
+}
+
+@code
+{
+    List<Todo> todos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        todos = (await ViewModel.GetAllAsync()).ToList();
+        ViewModel.PropertyChanged += async (o, e) =>
+        {
+            if (e.PropertyName.Equals(nameof(ViewModel.Todos)))
+            {
+                todos = (await ViewModel.GetAllAsync()).ToList();
+            }
+            StateHasChanged();
+        };
+        await base.OnInitializedAsync();
+    }
+}

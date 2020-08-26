@@ -1,0 +1,46 @@
+﻿@using TodoMvvmApp.Shared;
+
+<h3>TodoForm</h3>
+
+<EditForm Model="Todo" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <label for="Text">
+        Text
+        <input type="text" @bind="Todo.Text" />
+    </label>
+
+    <label for="Done">
+        Is Done?
+        <input type="checkbox" @bind="Todo.Done" />
+    </label>
+
+    <button type="submit" class="btn btn-primary">
+        Save
+    </button>
+    <button type="reset" class="btn btn-danger" @onclick="HandleReset">
+        Cancel
+    </button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public Todo Todo { get; set; }
+    [Parameter]
+    public EventCallback<Todo>
+    OnSubmit
+    { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private void HandleSubmit()
+    {
+        OnSubmit.InvokeAsync(Todo);
+    }
+
+    private void HandleReset()
+    {
+        OnCancel.InvokeAsync(null);
+    }
+}
